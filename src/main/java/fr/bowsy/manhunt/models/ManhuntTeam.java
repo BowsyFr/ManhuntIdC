@@ -1,7 +1,7 @@
 package fr.bowsy.manhunt.models;
 
+import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -12,7 +12,6 @@ public class ManhuntTeam {
     private final Set<UUID> hunterIds = new HashSet<>();
     private final Map<UUID, Integer> hunterLives = new HashMap<>();
 
-    // Mondes dédiés à cette équipe
     private World overworld;
     private World nether;
 
@@ -28,6 +27,10 @@ public class ManhuntTeam {
     private int mobDebuffTaskId = -1;
     private int freezeTaskId = -1;
     private int compassTaskId = -1;
+    private int briefingLockTaskId = -1;
+
+    // Positions verrouillées pendant le freeze
+    private final Map<UUID, Location> frozenLocations = new HashMap<>();
 
     public ManhuntTeam(String teamId, boolean netherEnabled) {
         this.teamId = teamId;
@@ -106,6 +109,26 @@ public class ManhuntTeam {
 
     public int getCompassTaskId() { return compassTaskId; }
     public void setCompassTaskId(int compassTaskId) { this.compassTaskId = compassTaskId; }
+
+    public int getBriefingLockTaskId() { return briefingLockTaskId; }
+    public void setBriefingLockTaskId(int briefingLockTaskId) { this.briefingLockTaskId = briefingLockTaskId; }
+
+    // Positions gelées
+    public void setFrozenLocation(UUID uuid, Location loc) {
+        frozenLocations.put(uuid, loc);
+    }
+
+    public Location getFrozenLocation(UUID uuid) {
+        return frozenLocations.get(uuid);
+    }
+
+    public void clearFrozenLocation(UUID uuid) {
+        frozenLocations.remove(uuid);
+    }
+
+    public void clearAllFrozenLocations() {
+        frozenLocations.clear();
+    }
 
     /** Renvoie tous les UUIDs de l'équipe (runner + chasseurs) */
     public Set<UUID> getAllPlayerIds() {

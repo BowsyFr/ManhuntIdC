@@ -1,68 +1,100 @@
 package fr.bowsy.manhunt.utils;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionType;
 
 import java.util.List;
 
+/**
+ * Recette de la Potion Furtive.
+ *
+ * Disposition :
+ *   A B C
+ *   D E D
+ *     D
+ *
+ * A = Lily of the Valley (muguet)
+ * B = Nether Quartz
+ * C = Paper
+ * D = Glass Bottle
+ * E = Water Bucket
+ */
 public class StealthPotionRecipe {
 
     public static final String STEALTH_KEY = "manhunt_stealth_potion";
 
-    /**
-     * Crée et retourne la recette de la potion furtive.
-     * Recette :
-     *   [  ][FD][  ]
-     *   [FD][MU][FD]
-     *   [  ][GT][  ]
-     * FD = Fleur de muguet (Lily of the Valley)
-     * MU = Bouteille de potion vide
-     * GT = Poudre de Blaze (énergie)
-     */
     public static ShapedRecipe createRecipe(Plugin plugin) {
         ItemStack result = createStealthPotion();
         NamespacedKey key = new NamespacedKey(plugin, STEALTH_KEY);
 
         ShapedRecipe recipe = new ShapedRecipe(key, result);
         recipe.shape(
-                " L ",
-                "LPL",
-                " B "
+                "ABC",
+                "DED",
+                " D "
         );
-        recipe.setIngredient('L', Material.LILY_OF_THE_VALLEY); // Fleur de muguet
-        recipe.setIngredient('P', Material.GLASS_BOTTLE);        // Flacon vide
-        recipe.setIngredient('B', Material.BLAZE_POWDER);        // Poudre de Blaze
+        recipe.setIngredient('A', Material.LILY_OF_THE_VALLEY);
+        recipe.setIngredient('B', Material.QUARTZ);
+        recipe.setIngredient('C', Material.PAPER);
+        recipe.setIngredient('D', Material.GLASS_BOTTLE);
+        recipe.setIngredient('E', Material.WATER_BUCKET);
 
         return recipe;
     }
 
-    /** Crée l'ItemStack représentant la potion furtive. */
+    /**
+     * Crée la Potion Furtive :
+     * - Base WATER → potion blanche, aucun effet vanilla
+     * - Couleur violette personnalisée
+     * - Tous les flags cachés → aucun tooltip vanilla (effets, attributs...)
+     * - Lore entièrement custom
+     * Pas d'effet d'invisibilité appliqué : elle fait uniquement disparaître
+     * le runner de la boussole des hunters.
+     */
     public static ItemStack createStealthPotion() {
-        ItemStack item = new ItemStack(Material.GLASS_BOTTLE);
-        ItemMeta meta = item.getItemMeta();
+        ItemStack item = new ItemStack(Material.POTION);
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ChatUtils.color("&5✦ Potion Furtive"));
+            // WATER = potion sans effet, couleur blanche de base
+            meta.setBasePotionType(PotionType.WATER);
+            // Teinte violette pour distinguer visuellement
+            meta.setColor(Color.fromRGB(160, 50, 220));
+
+            // Masquer TOUT ce que Minecraft injecte automatiquement
+            meta.addItemFlags(
+                    ItemFlag.HIDE_ATTRIBUTES,
+                    ItemFlag.HIDE_ENCHANTS,
+                    ItemFlag.HIDE_ADDITIONAL_TOOLTIP  // cache "Effets :" et la liste vanilla
+            );
+
+            // Nom et lore 100% custom (codes couleur en Unicode pour éviter bugs d'encodage)
+            meta.setDisplayName("\u00a75\u00a7l\u2756 Potion Furtive");
             meta.setLore(List.of(
-                    ChatUtils.color("&7Empêche les chasseurs de vous"),
-                    ChatUtils.color("&7localiser via la boussole pendant"),
-                    ChatUtils.color("&d4 minutes&7."),
-                    ChatUtils.color(""),
-                    ChatUtils.color("&8Usage unique - Craftable une seule fois")
+                    "\u00a77Fait dispara\u00eetre le chas\u00e9 de la",
+                    "\u00a77boussole des chasseurs pendant",
+                    "\u00a7d4 minutes\u00a77.",
+                    "",
+                    "\u00a78Usage unique \u2014 Craftable une seule fois"
             ));
-            // Utiliser un tag persistant pour identifier cet item
-            meta.getPersistentDataContainer(); // accessible via listeners
+
             item.setItemMeta(meta);
         }
         return item;
     }
 
-    /** Vérifie si un ItemStack est une potion furtive. */
+    /**
+     * Vérifie si un ItemStack est une Potion Furtive Manhunt.
+     */
     public static boolean isStealthPotion(ItemStack item) {
-        if (item == null || item.getType() != Material.GLASS_BOTTLE) return false;
+        if (item == null || item.getType() != Material.POTION) return false;
         if (!item.hasItemMeta()) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null

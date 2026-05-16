@@ -5,14 +5,13 @@ import fr.bowsy.manhunt.managers.GameManager;
 import fr.bowsy.manhunt.models.GameState;
 import fr.bowsy.manhunt.models.ManhuntTeam;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Collection;
 
 public class BlockListener implements Listener {
 
@@ -39,25 +38,21 @@ public class BlockListener implements Listener {
         Material smelted = CraftListener.getSmeltedResult(blockType);
         if (smelted == null) return;
 
-        // Supprimer les drops vanilla et donner le résultat fondu
         event.setDropItems(false);
 
-        // Calculer la quantité (silk touch = pas de CutClean)
         ItemStack tool = player.getInventory().getItemInMainHand();
-        if (tool.containsEnchantment(org.bukkit.enchantments.Enchantment.SILK_TOUCH)) return;
+        if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) return;
 
-        // Fortune
         int amount = 1;
-        int fortune = tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.FORTUNE);
+        int fortune = tool.getEnchantmentLevel(Enchantment.FORTUNE);
         if (fortune > 0 && isOreThatBenefitsFromFortune(blockType)) {
-            // Fortune donne +1 par niveau avec 1/3 de chance (simplifié : 1 + random(fortune))
-            amount += (int)(Math.random() * (fortune + 1));
+            amount += (int) (Math.random() * (fortune + 1));
         }
 
         ItemStack drop = new ItemStack(smelted, amount);
         event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), drop);
 
-        // Vérifier objectif après minage
+        // Vérifier objectif runner après minage (ex: ancient debris → netherite scrap)
         new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {

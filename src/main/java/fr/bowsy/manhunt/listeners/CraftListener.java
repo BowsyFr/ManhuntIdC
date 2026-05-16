@@ -41,7 +41,7 @@ public class CraftListener implements Listener {
 
         if (stealthCrafted.getOrDefault(player.getUniqueId(), false)) {
             event.getInventory().setResult(null);
-            player.sendMessage(ChatUtils.colorComponent("&cVous avez déjà crafté la potion furtive !"));
+            player.sendMessage(ChatUtils.colorComponent("&cVous avez d\u00e9j\u00e0 craft\u00e9 la potion furtive !"));
         }
     }
 
@@ -55,7 +55,7 @@ public class CraftListener implements Listener {
             if (team != null && team.getState() == GameState.RUNNING
                     && player.getUniqueId().equals(team.getRunnerId())) {
                 stealthCrafted.put(player.getUniqueId(), true);
-                player.sendMessage(ChatUtils.colorComponent("&5✦ Potion furtive craftée ! Usage unique."));
+                player.sendMessage(ChatUtils.colorComponent("&5\u2756 Potion furtive craft\u00e9e ! Usage unique."));
             }
         }
 

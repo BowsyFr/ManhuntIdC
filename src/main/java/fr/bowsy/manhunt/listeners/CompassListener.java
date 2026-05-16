@@ -5,6 +5,7 @@ import fr.bowsy.manhunt.managers.GameManager;
 import fr.bowsy.manhunt.models.GameState;
 import fr.bowsy.manhunt.models.ManhuntTeam;
 import fr.bowsy.manhunt.utils.ChatUtils;
+import fr.bowsy.manhunt.utils.ManhuntCompass;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,6 +28,7 @@ public class CompassListener implements Listener {
     public void onCompassUse(PlayerInteractEvent event) {
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         if (event.getItem() == null || event.getItem().getType() != Material.COMPASS) return;
+        if (!ManhuntCompass.isManhuntCompass(event.getItem())) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR
                 && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
@@ -38,8 +40,8 @@ public class CompassListener implements Listener {
         boolean isHunter = team.getHunterIds().contains(player.getUniqueId());
 
         if (isRunner) {
+            // Le runner voit le pseudo + distance du chasseur le plus proche
             gm.updateRunnerCompass(team);
-            player.sendMessage(ChatUtils.colorComponent("&6🧭 Boussole mise à jour vers le chasseur le plus proche."));
         } else if (isHunter) {
             Player runner = plugin.getServer().getPlayer(team.getRunnerId());
             if (runner == null) {
@@ -47,11 +49,12 @@ public class CompassListener implements Listener {
                 return;
             }
             if (team.isStealthActive()) {
-                player.sendMessage(ChatUtils.colorComponent("&7Le runner est &5furtif&7 — localisation impossible pendant "
-                        + getRemainingStealthSeconds(team) + "s."));
+                player.sendMessage(ChatUtils.colorComponent(
+                        "&7Le runner est &5furtif&7 \u2014 localisation impossible pendant "
+                                + getRemainingStealthSeconds(team) + "s."));
             } else if (runner.getWorld().equals(player.getWorld())) {
-                double dist = runner.getLocation().distance(player.getLocation());
-                player.sendMessage(ChatUtils.colorComponent("&6🧭 Runner à &e" + (int) dist + " blocs &6de vous."));
+                // Hunters : pas de distance, juste confirmation que la boussole est active
+                player.sendMessage(ChatUtils.colorComponent("&6\uD83E\uDDED Boussole active \u2014 le runner est dans votre dimension."));
             } else {
                 player.sendMessage(ChatUtils.colorComponent("&7Le runner est dans une autre dimension : &e"
                         + runner.getWorld().getName()));

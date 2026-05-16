@@ -29,7 +29,7 @@ public class WorldManager {
      */
     public boolean createWorldsForTeam(ManhuntTeam team) {
         String teamId = team.getTeamId();
-        String owName = "manhunt_" + teamId + "_overworld";
+        String owName = "manhunt_" + teamId;
         String netherName = "manhunt_" + teamId + "_nether";
 
         // --- Overworld ---

@@ -14,10 +14,19 @@ public class ChatUtils {
     private static final LegacyComponentSerializer SERIALIZER =
             LegacyComponentSerializer.legacyAmpersand();
 
+    /**
+     * Convertit les codes couleur &x en codes §x.
+     * Utilise la désérialisation puis re-sérialisation legacy § pour compatibilité.
+     */
     public static String color(String msg) {
-        return SERIALIZER.serialize(SERIALIZER.deserialize(msg));
+        // Désérialise les codes & puis re-sérialise en codes § (legacy)
+        return LegacyComponentSerializer.legacySection()
+                .serialize(SERIALIZER.deserialize(msg));
     }
 
+    /**
+     * Retourne un Component Adventure depuis une chaîne avec codes &.
+     */
     public static Component colorComponent(String msg) {
         return SERIALIZER.deserialize(msg);
     }
