@@ -23,7 +23,7 @@ public class SpeedrunnerCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatUtils.color("&cUsage: /speedrunner -p <pseudo> [equipe] | /speedrunner -roll [equipe]"));
+            sender.sendMessage(ChatUtils.colorComponent("&cUsage: /speedrunner -p <pseudo> [equipe] | /speedrunner -roll [equipe]"));
             return true;
         }
 
@@ -32,12 +32,12 @@ public class SpeedrunnerCommand implements CommandExecutor, TabCompleter {
         switch (flag) {
             case "-p" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatUtils.color("&cUsage: /speedrunner -p <pseudo> [equipe]"));
+                    sender.sendMessage(ChatUtils.colorComponent("&cUsage: /speedrunner -p <pseudo> [equipe]"));
                     return true;
                 }
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    sender.sendMessage(ChatUtils.color("&cJoueur introuvable: &e" + args[1]));
+                    sender.sendMessage(ChatUtils.colorComponent("&cJoueur introuvable: &e" + args[1]));
                     return true;
                 }
 
@@ -45,10 +45,16 @@ public class SpeedrunnerCommand implements CommandExecutor, TabCompleter {
                 if (teamId == null) return true;
 
                 if (gm.setSpeedrunner(teamId, target)) {
-                    ChatUtils.send((Player) sender, plugin,
-                            "&a" + target.getName() + " est maintenant le speedrunner de l'équipe &6" + teamId + "&a !");
+                    // Fix : vérifier que sender est bien un Player avant de caster
+                    if (sender instanceof Player p) {
+                        ChatUtils.send(p, plugin,
+                                "&a" + target.getName() + " est maintenant le speedrunner de l'équipe &6" + teamId + "&a !");
+                    } else {
+                        sender.sendMessage(ChatUtils.colorComponent(
+                                "&a" + target.getName() + " est maintenant le speedrunner de l'équipe &6" + teamId + "&a !"));
+                    }
                 } else {
-                    sender.sendMessage(ChatUtils.color("&cImpossible de définir le speedrunner. Vérifiez l'état de la partie."));
+                    sender.sendMessage(ChatUtils.colorComponent("&cImpossible de définir le speedrunner. Vérifiez l'état de la partie."));
                 }
             }
             case "-roll" -> {
@@ -58,55 +64,46 @@ public class SpeedrunnerCommand implements CommandExecutor, TabCompleter {
                 if (gm.rollSpeedrunner(teamId)) {
                     ManhuntTeam team = gm.getTeam(teamId);
                     Player runner = Bukkit.getPlayer(team.getRunnerId());
-                    ChatUtils.send(sender instanceof Player p ? p : null, plugin,
-                            "&aSpeedrunner tiré au sort pour l'équipe &6" + teamId + "&a : &e"
-                                    + (runner != null ? runner.getName() : "?") + " !");
+                    String msg = "&aSpeedrunner tiré au sort pour l'équipe &6" + teamId + "&a : &e"
+                            + (runner != null ? runner.getName() : "?") + " !";
                     if (sender instanceof Player p) {
-                        ChatUtils.send(p, plugin,
-                                "&aSpeedrunner tiré au sort pour l'équipe &6" + teamId + " !");
+                        ChatUtils.send(p, plugin, msg);
+                    } else {
+                        sender.sendMessage(ChatUtils.colorComponent(msg));
                     }
                 } else {
-                    sender.sendMessage(ChatUtils.color("&cImpossible de tirer au sort. L'équipe est-elle vide ?"));
+                    sender.sendMessage(ChatUtils.colorComponent("&cImpossible de tirer au sort. L'équipe est-elle vide ?"));
                 }
             }
-            default -> sender.sendMessage(ChatUtils.color("&cDrapeau inconnu. Utilisez -p ou -roll."));
+            default -> sender.sendMessage(ChatUtils.colorComponent("&cDrapeau inconnu. Utilisez -p ou -roll."));
         }
 
         return true;
     }
 
-    /**
-     * Résout le teamId à partir des args ou en cherchant l'équipe du joueur.
-     */
     private String resolveTeamId(CommandSender sender, String[] args, int argIndex, Player target) {
         if (args.length > argIndex) {
             String id = args[argIndex];
             if (gm.getTeam(id) == null) {
-                sender.sendMessage(ChatUtils.color("&cÉquipe inconnue: &e" + id));
+                sender.sendMessage(ChatUtils.colorComponent("&cÉquipe inconnue: &e" + id));
                 return null;
             }
             return id;
         }
 
-        // Essayer de trouver l'équipe du target ou du sender
         Player ref = target != null ? target : (sender instanceof Player p ? p : null);
         if (ref != null) {
             ManhuntTeam team = gm.getTeamOfPlayer(ref.getUniqueId());
             if (team != null) return team.getTeamId();
         }
 
-        // Si une seule équipe, utiliser celle-là
         Collection<ManhuntTeam> teams = gm.getAllTeams();
         if (teams.size() == 1) {
             return teams.iterator().next().getTeamId();
         }
 
-        sender.sendMessage(ChatUtils.color("&cPlusieurs équipes existent. Précisez l'équipe: /speedrunner " + args[0] + " ... <equipe>"));
+        sender.sendMessage(ChatUtils.colorComponent("&cPlusieurs équipes existent. Précisez l'équipe: /speedrunner " + args[0] + " ... <equipe>"));
         return null;
-    }
-
-    private void send(Player p, String msg) {
-        if (p != null) ChatUtils.send(p, plugin, msg);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class LivesCommand implements CommandExecutor {
         if (args.length >= 1) {
             team = gm.getTeam(args[0]);
             if (team == null) {
-                sender.sendMessage(ChatUtils.color("&cÉquipe inconnue: &e" + args[0]));
+                sender.sendMessage(ChatUtils.colorComponent("&cÉquipe inconnue: &e" + args[0]));
                 return true;
             }
         } else if (sender instanceof Player p) {
@@ -41,17 +41,17 @@ public class LivesCommand implements CommandExecutor {
         }
 
         if (team == null) {
-            sender.sendMessage(ChatUtils.color("&cVous n'êtes dans aucune équipe. Précisez: /lives <equipe>"));
+            sender.sendMessage(ChatUtils.colorComponent("&cVous n'êtes dans aucune équipe. Précisez: /lives <equipe>"));
             return true;
         }
 
-        sender.sendMessage(ChatUtils.color("&6&lVies des chasseurs - Équipe " + team.getTeamId()));
+        sender.sendMessage(ChatUtils.colorComponent("&6&lVies des chasseurs - Équipe " + team.getTeamId()));
         for (UUID uid : team.getHunterIds()) {
             Player h = Bukkit.getPlayer(uid);
             String name = h != null ? h.getName() : uid.toString().substring(0, 8);
             int lives = team.getHunterLives(uid);
             String status = lives <= 0 ? "&cÉliminé" : "&a" + lives + " vie(s)";
-            sender.sendMessage(ChatUtils.color("  &7" + name + ": " + status));
+            sender.sendMessage(ChatUtils.colorComponent("  &7" + name + ": " + status));
         }
         return true;
     }

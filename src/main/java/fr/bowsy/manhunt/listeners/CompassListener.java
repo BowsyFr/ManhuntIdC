@@ -25,7 +25,6 @@ public class CompassListener implements Listener {
 
     @EventHandler
     public void onCompassUse(PlayerInteractEvent event) {
-        // Éviter double-appel (main + off-hand)
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         if (event.getItem() == null || event.getItem().getType() != Material.COMPASS) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR
@@ -39,24 +38,22 @@ public class CompassListener implements Listener {
         boolean isHunter = team.getHunterIds().contains(player.getUniqueId());
 
         if (isRunner) {
-            // Runner → afficher chasseur le plus proche
             gm.updateRunnerCompass(team);
-            player.sendMessage(ChatUtils.color("&6🧭 Boussole mise à jour vers le chasseur le plus proche."));
+            player.sendMessage(ChatUtils.colorComponent("&6🧭 Boussole mise à jour vers le chasseur le plus proche."));
         } else if (isHunter) {
-            // Chasseur → afficher info runner
             Player runner = plugin.getServer().getPlayer(team.getRunnerId());
             if (runner == null) {
-                player.sendMessage(ChatUtils.color("&7Le runner est hors-ligne."));
+                player.sendMessage(ChatUtils.colorComponent("&7Le runner est hors-ligne."));
                 return;
             }
             if (team.isStealthActive()) {
-                player.sendMessage(ChatUtils.color("&7Le runner est &5furtif&7 — localisation impossible pendant "
+                player.sendMessage(ChatUtils.colorComponent("&7Le runner est &5furtif&7 — localisation impossible pendant "
                         + getRemainingStealthSeconds(team) + "s."));
             } else if (runner.getWorld().equals(player.getWorld())) {
                 double dist = runner.getLocation().distance(player.getLocation());
-                player.sendMessage(ChatUtils.color("&6🧭 Runner à &e" + (int) dist + " blocs &6de vous."));
+                player.sendMessage(ChatUtils.colorComponent("&6🧭 Runner à &e" + (int) dist + " blocs &6de vous."));
             } else {
-                player.sendMessage(ChatUtils.color("&7Le runner est dans une autre dimension : &e"
+                player.sendMessage(ChatUtils.colorComponent("&7Le runner est dans une autre dimension : &e"
                         + runner.getWorld().getName()));
             }
         }

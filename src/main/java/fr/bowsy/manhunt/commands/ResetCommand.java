@@ -32,7 +32,7 @@ public class ResetCommand implements CommandExecutor {
         if (args.length >= 1) {
             String id = args[0];
             if (gm.getTeam(id) != null) return id;
-            sender.sendMessage(ChatUtils.color("&cÉquipe inconnue: &e" + id));
+            sender.sendMessage(ChatUtils.colorComponent("&cÉquipe inconnue: &e" + id));
             return null;
         }
         if (sender instanceof Player p) {
@@ -41,7 +41,7 @@ public class ResetCommand implements CommandExecutor {
         }
         Collection<ManhuntTeam> teams = gm.getAllTeams();
         if (teams.size() == 1) return teams.iterator().next().getTeamId();
-        sender.sendMessage(ChatUtils.color("&cPlusieurs équipes. Précisez: /reset <equipe>"));
+        sender.sendMessage(ChatUtils.colorComponent("&cPlusieurs équipes. Précisez: /reset <equipe>"));
         return null;
     }
 }

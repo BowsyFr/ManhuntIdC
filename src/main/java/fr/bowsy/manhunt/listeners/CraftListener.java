@@ -9,7 +9,6 @@ import fr.bowsy.manhunt.utils.StealthPotionRecipe;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -24,18 +23,13 @@ public class CraftListener implements Listener {
     private final ManhuntPlugin plugin;
     private final GameManager gm;
 
-    // Joueurs ayant déjà crafté la potion furtive dans la partie en cours
     private final Map<UUID, Boolean> stealthCrafted = new HashMap<>();
 
     public CraftListener(ManhuntPlugin plugin) {
         this.plugin = plugin;
         this.gm = plugin.getGameManager();
-
-        // Enregistrer la recette de la potion furtive
         plugin.getServer().addRecipe(StealthPotionRecipe.createRecipe(plugin));
     }
-
-    // ── Blocage si déjà craftée ───────────────────────────────────────────────
 
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent event) {
@@ -43,13 +37,11 @@ public class CraftListener implements Listener {
         ItemStack result = event.getRecipe().getResult();
         if (!StealthPotionRecipe.isStealthPotion(result)) return;
 
-        // Chercher le joueur craftant
         if (!(event.getView().getPlayer() instanceof Player player)) return;
 
         if (stealthCrafted.getOrDefault(player.getUniqueId(), false)) {
-            // Bloquer le craft si déjà crafté
             event.getInventory().setResult(null);
-            player.sendMessage(ChatUtils.color("&cVous avez déjà crafté la potion furtive !"));
+            player.sendMessage(ChatUtils.colorComponent("&cVous avez déjà crafté la potion furtive !"));
         }
     }
 
@@ -63,11 +55,10 @@ public class CraftListener implements Listener {
             if (team != null && team.getState() == GameState.RUNNING
                     && player.getUniqueId().equals(team.getRunnerId())) {
                 stealthCrafted.put(player.getUniqueId(), true);
-                player.sendMessage(ChatUtils.color("&5✦ Potion furtive craftée ! Usage unique."));
+                player.sendMessage(ChatUtils.colorComponent("&5✦ Potion furtive craftée ! Usage unique."));
             }
         }
 
-        // Vérifier objectif après craft (ex: craft d'un item diamant)
         new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {
@@ -80,12 +71,6 @@ public class CraftListener implements Listener {
         }.runTaskLater(plugin, 1L);
     }
 
-    // ── CutClean : auto-smelt pour le runner ─────────────────────────────────
-
-    /**
-     * Map des minerais bruts → lingots/résultats fondus.
-     * CutClean s'applique uniquement au runner, lors du minage (BlockBreakEvent dans BlockListener).
-     */
     public static Material getSmeltedResult(Material raw) {
         return switch (raw) {
             case IRON_ORE, DEEPSLATE_IRON_ORE, RAW_IRON -> Material.IRON_INGOT;
@@ -100,7 +85,6 @@ public class CraftListener implements Listener {
         };
     }
 
-    /** Réinitialise l'état des crafts (à appeler au reset). */
     public void resetCrafts(UUID playerId) {
         stealthCrafted.remove(playerId);
     }

@@ -7,7 +7,7 @@ import fr.bowsy.manhunt.utils.ChatUtils;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
 
 public class StartCommand implements CommandExecutor {
 
@@ -26,7 +26,7 @@ public class StartCommand implements CommandExecutor {
 
         boolean ok = gm.startGame(teamId);
         if (!ok) {
-            sender.sendMessage(ChatUtils.color(
+            sender.sendMessage(ChatUtils.colorComponent(
                     "&cImpossible de démarrer. Vérifiez que l'équipe existe, qu'un speedrunner est assigné et que la partie n'est pas déjà lancée."));
         }
         return true;
@@ -36,7 +36,7 @@ public class StartCommand implements CommandExecutor {
         if (args.length >= 1) {
             String id = args[0];
             if (gm.getTeam(id) != null) return id;
-            sender.sendMessage(ChatUtils.color("&cÉquipe inconnue: &e" + id));
+            sender.sendMessage(ChatUtils.colorComponent("&cÉquipe inconnue: &e" + id));
             return null;
         }
         if (sender instanceof Player p) {
@@ -45,7 +45,7 @@ public class StartCommand implements CommandExecutor {
         }
         Collection<ManhuntTeam> teams = gm.getAllTeams();
         if (teams.size() == 1) return teams.iterator().next().getTeamId();
-        sender.sendMessage(ChatUtils.color("&cPlusieurs équipes. Précisez: /start <equipe>"));
+        sender.sendMessage(ChatUtils.colorComponent("&cPlusieurs équipes. Précisez: /start <equipe>"));
         return null;
     }
 }
