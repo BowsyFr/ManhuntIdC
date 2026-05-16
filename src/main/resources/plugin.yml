@@ -1,0 +1,37 @@
+name: ManhuntIdC
+version: 'alpha-1.0.0'
+main: fr.bowsy.manhunt.ManhuntPlugin
+api-version: '1.21'
+description: Plugin Manhunt multi-équipes
+authors: [Bowsy]
+softdepend: [Multiverse-Core]
+
+commands:
+  speedrunner:
+    description: Définit le speedrunner d'une équipe
+    usage: /speedrunner -p <pseudo> [equipe] | /speedrunner -roll [equipe]
+    permission: manhunt.admin
+  start:
+    description: Lance la partie d'une équipe
+    usage: /start [equipe]
+    permission: manhunt.admin
+  reset:
+    description: Réinitialise une partie
+    usage: /reset [equipe]
+    permission: manhunt.admin
+  manhunt:
+    description: Commandes de gestion Manhunt
+    usage: /manhunt <create|list|delete|addplayer|info> [args]
+    permission: manhunt.admin
+  lives:
+    description: Voir les vies restantes des chasseurs
+    usage: /lives [equipe]
+    permission: manhunt.use
+
+permissions:
+  manhunt.admin:
+    description: Accès aux commandes administrateur Manhunt
+    default: op
+  manhunt.use:
+    description: Accès aux commandes basiques Manhunt
+    default: true

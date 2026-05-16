@@ -1,0 +1,34 @@
+# Configuration Manhunt
+settings:
+  # Durée maximale d'une partie en minutes
+  max-duration: 120
+  # Durée du freeze au départ (secondes)
+  freeze-duration: 90
+  # Durée du briefing avant le départ (secondes)
+  briefing-duration: 30
+  # Nombre de vies des chasseurs
+  hunter-lives: 2
+  # Taille de la bordure (demi-côté en blocs)
+  border-size: 1000
+  # Activer le Nether (si false -> objectif diamant)
+  nether-enabled: true
+  # Durée de la potion furtive en secondes
+  stealth-potion-duration: 240
+  # Délai d'invincibilité après respawn (secondes)
+  respawn-invincibility: 5
+  # Distance de mob-debuff autour du chassé (blocs)
+  mob-debuff-radius: 10
+  # Intervalle de vérification des mobs hostiles (ticks)
+  mob-check-interval: 40
+
+messages:
+  prefix: "&8[&6Manhunt&8] &r"
+  game-start: "&aLa partie commence ! Bonne chance à tous !"
+  runner-win: "&6Le chassé a accompli son objectif ! &eVictoire du chassé !"
+  hunters-win: "&cLe chassé a été éliminé ! &4Victoire des chasseurs !"
+  time-up: "&cTemps écoulé ! &4Victoire des chasseurs !"
+  runner-freeze: "&ePhase de préparation : &f%s secondes restantes..."
+  hunter-death: "&c%s est mort ! &7Il lui reste &c%d vie(s)&7."
+  hunter-eliminated: "&c%s a été éliminé (plus de vies) !"
+  stealth-active: "&7Potion furtive activée pour &f%d minutes&7."
+  stealth-expired: "&cPotion furtive expirée ! Les chasseurs peuvent vous localiser."
