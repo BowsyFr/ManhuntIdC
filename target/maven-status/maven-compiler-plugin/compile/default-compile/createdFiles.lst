@@ -1,6 +1,5 @@
 fr/bowsy/manhunt/models/GameState.class
 fr/bowsy/manhunt/listeners/PlayerListener.class
-fr/bowsy/manhunt/managers/GameManager$10.class
 fr/bowsy/manhunt/managers/GameManager$2.class
 fr/bowsy/manhunt/managers/WorldManager$1.class
 fr/bowsy/manhunt/listeners/BlockListener$2.class
@@ -9,7 +8,6 @@ fr/bowsy/manhunt/models/ManhuntTeam.class
 fr/bowsy/manhunt/listeners/CraftListener.class
 fr/bowsy/manhunt/managers/GameManager$4.class
 fr/bowsy/manhunt/listeners/CraftListener$1.class
-fr/bowsy/manhunt/managers/GameManager$9.class
 fr/bowsy/manhunt/utils/ChatUtils.class
 fr/bowsy/manhunt/commands/ManhuntCommand.class
 fr/bowsy/manhunt/commands/StartCommand.class

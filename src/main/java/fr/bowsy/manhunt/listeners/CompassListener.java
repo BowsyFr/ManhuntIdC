@@ -40,7 +40,6 @@ public class CompassListener implements Listener {
         boolean isHunter = team.getHunterIds().contains(player.getUniqueId());
 
         if (isRunner) {
-            // Le runner voit le pseudo + distance du chasseur le plus proche
             gm.updateRunnerCompass(team);
         } else if (isHunter) {
             Player runner = plugin.getServer().getPlayer(team.getRunnerId());
@@ -50,11 +49,10 @@ public class CompassListener implements Listener {
             }
             if (team.isStealthActive()) {
                 player.sendMessage(ChatUtils.colorComponent(
-                        "&7Le runner est &5furtif&7 \u2014 localisation impossible pendant "
+                        "&7Le runner est &5furtif&7 — localisation impossible pendant "
                                 + getRemainingStealthSeconds(team) + "s."));
             } else if (runner.getWorld().equals(player.getWorld())) {
-                // Hunters : pas de distance, juste confirmation que la boussole est active
-                player.sendMessage(ChatUtils.colorComponent("&6\uD83E\uDDED Boussole active \u2014 le runner est dans votre dimension."));
+                player.sendMessage(ChatUtils.colorComponent("&6🧭 Boussole active — le runner est dans votre dimension."));
             } else {
                 player.sendMessage(ChatUtils.colorComponent("&7Le runner est dans une autre dimension : &e"
                         + runner.getWorld().getName()));

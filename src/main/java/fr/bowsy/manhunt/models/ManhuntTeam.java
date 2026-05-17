@@ -21,6 +21,9 @@ public class ManhuntTeam {
     private long startTime = -1;
     private long stealthStartTime = -1;
 
+    // Spawn de la partie (calculé au start)
+    private Location spawnLocation;
+
     // Task IDs Bukkit pour annulation
     private int timerTaskId = -1;
     private int effectTaskId = -1;
@@ -29,7 +32,7 @@ public class ManhuntTeam {
     private int compassTaskId = -1;
     private int briefingLockTaskId = -1;
 
-    // Positions verrouillées pendant le freeze
+    // Positions verrouillées pendant le freeze (plus utilisé activement mais gardé pour compatibilité)
     private final Map<UUID, Location> frozenLocations = new HashMap<>();
 
     public ManhuntTeam(String teamId, boolean netherEnabled) {
@@ -95,6 +98,9 @@ public class ManhuntTeam {
     public long getStealthStartTime() { return stealthStartTime; }
     public void setStealthStartTime(long stealthStartTime) { this.stealthStartTime = stealthStartTime; }
 
+    public Location getSpawnLocation() { return spawnLocation; }
+    public void setSpawnLocation(Location spawnLocation) { this.spawnLocation = spawnLocation; }
+
     public int getTimerTaskId() { return timerTaskId; }
     public void setTimerTaskId(int timerTaskId) { this.timerTaskId = timerTaskId; }
 
@@ -113,22 +119,11 @@ public class ManhuntTeam {
     public int getBriefingLockTaskId() { return briefingLockTaskId; }
     public void setBriefingLockTaskId(int briefingLockTaskId) { this.briefingLockTaskId = briefingLockTaskId; }
 
-    // Positions gelées
-    public void setFrozenLocation(UUID uuid, Location loc) {
-        frozenLocations.put(uuid, loc);
-    }
-
-    public Location getFrozenLocation(UUID uuid) {
-        return frozenLocations.get(uuid);
-    }
-
-    public void clearFrozenLocation(UUID uuid) {
-        frozenLocations.remove(uuid);
-    }
-
-    public void clearAllFrozenLocations() {
-        frozenLocations.clear();
-    }
+    // Positions gelées (legacy, conservé)
+    public void setFrozenLocation(UUID uuid, Location loc) { frozenLocations.put(uuid, loc); }
+    public Location getFrozenLocation(UUID uuid) { return frozenLocations.get(uuid); }
+    public void clearFrozenLocation(UUID uuid) { frozenLocations.remove(uuid); }
+    public void clearAllFrozenLocations() { frozenLocations.clear(); }
 
     /** Renvoie tous les UUIDs de l'équipe (runner + chasseurs) */
     public Set<UUID> getAllPlayerIds() {

@@ -1,5 +1,5 @@
 name: ManhuntIdC
-version: 'alpha-1.1.0'
+version: 'alpha-1.1.1'
 main: fr.bowsy.manhunt.ManhuntPlugin
 api-version: '1.21'
 description: Plugin Manhunt multi-équipes
